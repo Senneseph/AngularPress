@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: angular-press-mysql-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: angular_press
+      MYSQL_USER: angular_press_user
+      MYSQL_PASSWORD: angular_press_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+      - ./angular-press-api/scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - angular-press-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NestJS API Backend (Development)
+  api:
+    build:
+      context: ./angular-press-api
+      dockerfile: Dockerfile.dev
+    container_name: angular-press-api-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: angular_press_user
+      DB_PASSWORD: angular_press_pass
+      DB_DATABASE: angular_press
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      JWT_EXPIRATION: 7d
+      PORT: 3000
+      CORS_ORIGIN: http://localhost:4200
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - angular-press-network
+    volumes:
+      - ./angular-press-api/src:/app/src
+      - /app/node_modules
+
+  # Angular Frontend (Development)
+  frontend:
+    build:
+      context: ./angular-press
+      dockerfile: Dockerfile.dev
+    container_name: angular-press-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - api
+    networks:
+      - angular-press-network
+    volumes:
+      - ./angular-press/src:/app/src
+      - /app/node_modules
+
+networks:
+  angular-press-network:
+    driver: bridge
+
+volumes:
+  mysql_data_dev:
+    driver: local
+
