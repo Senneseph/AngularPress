@@ -1,3 +1,5 @@
+import { MediaItem } from '../../../models/media.model';
+
 export class LoadMedia {
   static readonly type = '[Media] Load Media';
 }

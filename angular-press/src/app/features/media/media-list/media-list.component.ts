@@ -1,18 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MediaState } from '../../../store/media/media.state';
 import { LoadMedia, DeleteMedia } from '../../../store/media/media.actions';
 import { MediaItem } from '../../../models/media.model';
+import { FileSizePipe } from '../../../shared/pipes/file-size.pipe';
 
 @Component({
   selector: 'app-media-list',
   templateUrl: './media-list.component.html',
-  styleUrls: ['./media-list.component.scss']
+  styleUrls: ['./media-list.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatProgressBarModule,
+    ClipboardModule,
+    FileSizePipe
+  ]
 })
 export class MediaListComponent implements OnInit {
-  @Select(MediaState.getMedia) media$: Observable<MediaItem[]>;
-  @Select(MediaState.getLoading) loading$: Observable<boolean>;
+  @Select(MediaState.getMedia) media$!: Observable<MediaItem[]>;
+  @Select(MediaState.getLoading) loading$!: Observable<boolean>;
 
   constructor(private store: Store) {}
 

@@ -10,15 +10,15 @@ import { SharedModule } from '../../shared/shared.module';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./page-list/page-list.module').then(m => m.PageListModule)
+    loadComponent: () => import('./page-list/page-list.component').then(m => m.PageListComponent)
   },
   {
     path: 'new',
-    loadChildren: () => import('./page-form/page-form.module').then(m => m.PageFormModule)
+    loadComponent: () => import('./page-form/page-form.component').then(m => m.PageFormComponent)
   },
   {
     path: 'edit/:id',
-    loadChildren: () => import('./page-form/page-form.module').then(m => m.PageFormModule)
+    loadComponent: () => import('./page-form/page-form.component').then(m => m.PageFormComponent)
   }
 ];
 

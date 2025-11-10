@@ -10,11 +10,7 @@ import { SharedModule } from '../../shared/shared.module';
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () => import('./media-list/media-list.module').then(m => m.MediaListModule)
-  },
-  {
-    path: 'upload',
-    loadChildren: () => import('./media-upload/media-upload.module').then(m => m.MediaUploadModule)
+    loadComponent: () => import('./media-list/media-list.component').then(m => m.MediaListComponent)
   }
 ];
 
