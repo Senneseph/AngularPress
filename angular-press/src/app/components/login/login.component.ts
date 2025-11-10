@@ -40,7 +40,13 @@ export class LoginComponent {
     this.authService.login(this.username, this.password).subscribe({
       next: (user) => {
         console.log('Login successful:', user);
-        this.router.navigate(['/dashboard']);
+
+        // Check if password change is required
+        if (this.authService.requiresPasswordChange()) {
+          this.router.navigate(['/ap-admin/change-password']);
+        } else {
+          this.router.navigate(['/ap-admin/dashboard']);
+        }
       },
       error: (err) => {
         console.error('Login error:', err);
@@ -63,7 +69,7 @@ export class LoginComponent {
     this.authService.register(this.username, this.email, this.password, this.displayName).subscribe({
       next: (user) => {
         console.log('Registration successful:', user);
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/ap-admin/dashboard']);
       },
       error: (err) => {
         console.error('Registration error:', err);

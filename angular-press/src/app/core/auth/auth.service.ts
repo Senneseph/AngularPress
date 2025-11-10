@@ -114,7 +114,7 @@ export class AuthService {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('access_token');
     this.currentUserSubject.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/ap-admin/login']);
   }
 
   hasCapability(capability: string): boolean {
@@ -123,5 +123,19 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!localStorage.getItem('access_token');
+  }
+
+  requiresPasswordChange(): boolean {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      return false;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.requirePasswordChange === true;
+    } catch (e) {
+      return false;
+    }
   }
 }
