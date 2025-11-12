@@ -7,17 +7,17 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
-  
+
   const userRepository = app.get<Repository<User>>(getRepositoryToken(User));
 
   // Check if admin user already exists
   const existingAdmin = await userRepository.findOne({
-    where: { userLogin: 'admin' }
+    where: { userLogin: 'admin' },
   });
 
   if (!existingAdmin) {
     console.log('Creating default admin user...');
-    
+
     // Hash the default password
     const hashedPassword = await bcrypt.hash('admin123', 10);
 
@@ -37,6 +37,7 @@ async function bootstrap() {
     console.log('✅ Default admin user created successfully!');
     console.log('   Username: admin');
     console.log('   Password: admin123');
+    // eslint-disable-next-line prettier/prettier
     console.log('   ⚠️  You will be required to change this password on first login.');
   } else {
     console.log('ℹ️  Admin user already exists. Skipping creation.');
@@ -45,8 +46,7 @@ async function bootstrap() {
   await app.close();
 }
 
-bootstrap().catch(err => {
+bootstrap().catch((err) => {
   console.error('Error during seeding:', err);
   process.exit(1);
 });
-
