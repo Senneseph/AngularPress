@@ -5,131 +5,134 @@
     <a routerLink="/ap-admin/posts/new" class="page-title-action">Add New</a>
 
     <!-- Filter Tabs -->
-    <ul class="subsubsub">
-      <li class="all">
-        <a [class.current]="selectedFilter === 'all'" (click)="onFilterChange('all')">
-          All <span class="count">({{ getStatusCount('all') }})</span>
-        </a> |
-      </li>
-      <li class="publish">
-        <a [class.current]="selectedFilter === 'publish'" (click)="onFilterChange('publish')">
-          Published <span class="count">({{ getStatusCount('publish') }})</span>
-        </a> |
-      </li>
-      <li class="draft">
-        <a [class.current]="selectedFilter === 'draft'" (click)="onFilterChange('draft')">
-          Draft <span class="count">({{ getStatusCount('draft') }})</span>
-        </a> |
-      </li>
-      <li class="trash">
-        <a [class.current]="selectedFilter === 'trash'" (click)="onFilterChange('trash')">
-          Trash <span class="count">({{ getStatusCount('trash') }})</span>
-        </a>
-      </li>
-    </ul>
+    <div>
+        <ul class="subsubsub">
+        <li class="all">
+            <a [class.current]="selectedFilter === 'all'" (click)="onFilterChange('all')">
+            All <span class="count">({{ getStatusCount('all') }})</span>
+            </a> |
+        </li>
+        <li class="publish">
+            <a [class.current]="selectedFilter === 'publish'" (click)="onFilterChange('publish')">
+            Published <span class="count">({{ getStatusCount('publish') }})</span>
+            </a> |
+        </li>
+        <li class="draft">
+            <a [class.current]="selectedFilter === 'draft'" (click)="onFilterChange('draft')">
+            Draft <span class="count">({{ getStatusCount('draft') }})</span>
+            </a> |
+        </li>
+        <li class="trash">
+            <a [class.current]="selectedFilter === 'trash'" (click)="onFilterChange('trash')">
+            Trash <span class="count">({{ getStatusCount('trash') }})</span>
+            </a>
+        </li>
+        </ul>
 
-    <!-- Search and Filters -->
-    <div class="tablenav top">
-      <div class="alignleft actions">
-        <select class="wp-select">
-          <option value="-1">Bulk Actions</option>
-          <option value="edit">Edit</option>
-          <option value="trash">Move to Trash</option>
-        </select>
-        <button class="button action">Apply</button>
-      </div>
-      <div class="tablenav-pages">
-        <span class="displaying-num">{{ filteredPosts.length }} items</span>
-      </div>
-      <div class="search-box">
-        <input
-          type="search"
-          class="wp-search-input"
-          placeholder="Search posts..."
-          [(ngModel)]="searchQuery"
-          (input)="onSearch()"
-        />
-      </div>
-    </div>
 
-    <!-- Posts Table -->
-    <table class="wp-list-table widefat fixed striped posts">
-      <thead>
-        <tr>
-          <td class="manage-column column-cb check-column">
-            <input type="checkbox" />
-          </td>
-          <th class="manage-column column-title column-primary">Title</th>
-          <th class="manage-column column-author">Author</th>
-          <th class="manage-column column-categories">Categories</th>
-          <th class="manage-column column-tags">Tags</th>
-          <th class="manage-column column-date">Date</th>
-        </tr>
-      </thead>
-      <tbody *ngIf="!loading">
-        <tr *ngFor="let post of filteredPosts" [class.status-draft]="post.post_status === 'draft'">
-          <th class="check-column">
-            <input type="checkbox" />
-          </th>
-          <td class="title column-title column-primary">
-            <strong>
-              <a class="row-title" (click)="editPost(post.ID)">{{ post.post_title || '(no title)' }}</a>
-              <span class="post-state" *ngIf="post.post_status === 'draft'"> — Draft</span>
-            </strong>
-            <div class="row-actions">
-              <span class="edit">
-                <a (click)="editPost(post.ID)">Edit</a> |
-              </span>
-              <span class="trash">
-                <a (click)="trashPost(post)" class="submitdelete">Trash</a> |
-              </span>
-              <span class="view">
-                <a (click)="viewPost(post)" target="_blank">View</a>
-              </span>
-            </div>
-          </td>
-          <td class="author column-author">
-            {{ post.author?.display_name || 'Unknown' }}
-          </td>
-          <td class="categories column-categories">
-            <span class="categories-placeholder">—</span>
-          </td>
-          <td class="tags column-tags">
-            <span class="tags-placeholder">—</span>
-          </td>
-          <td class="date column-date">
-            <span *ngIf="post.post_status === 'publish'">Published</span>
-            <span *ngIf="post.post_status === 'draft'">Last Modified</span>
-            <br>
-            {{ formatDate(post.post_date) }}
-          </td>
-        </tr>
-        <tr *ngIf="filteredPosts.length === 0">
-          <td colspan="6" class="no-items">No posts found.</td>
-        </tr>
-      </tbody>
-      <tbody *ngIf="loading">
-        <tr>
-          <td colspan="6" class="loading-row">
-            <div class="loading-spinner">Loading posts...</div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <!-- Search and Filters -->
+        <div class="tablenav top">
+        <div class="alignleft actions">
+            <select class="wp-select">
+            <option value="-1">Bulk Actions</option>
+            <option value="edit">Edit</option>
+            <option value="trash">Move to Trash</option>
+            </select>
+            <button class="button action">Apply</button>
+        </div>
+        <div class="tablenav-pages">
+            <span class="displaying-num">{{ filteredPosts.length }} items</span>
+        </div>
+        <div class="search-box">
+            <input
+            type="search"
+            class="wp-search-input"
+            placeholder="Search posts..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearch()"
+            />
+        </div>
+        </div>
 
-    <!-- Bottom Navigation -->
-    <div class="tablenav bottom">
-      <div class="alignleft actions">
-        <select class="wp-select">
-          <option value="-1">Bulk Actions</option>
-          <option value="edit">Edit</option>
-          <option value="trash">Move to Trash</option>
-        </select>
-        <button class="button action">Apply</button>
-      </div>
-      <div class="tablenav-pages">
-        <span class="displaying-num">{{ filteredPosts.length }} items</span>
-      </div>
+        <!-- Posts Table -->
+        <table class="wp-list-table widefat fixed striped posts">
+        <thead>
+            <tr>
+            <td class="manage-column column-cb check-column">
+                <input type="checkbox" />
+            </td>
+            <th class="manage-column column-title column-primary">Title</th>
+            <th class="manage-column column-author">Author</th>
+            <th class="manage-column column-categories">Categories</th>
+            <th class="manage-column column-tags">Tags</th>
+            <th class="manage-column column-date">Date</th>
+            </tr>
+        </thead>
+        <tbody *ngIf="!loading">
+            <tr *ngFor="let post of filteredPosts" [class.status-draft]="post.post_status === 'draft'">
+            <th class="check-column">
+                <input type="checkbox" />
+            </th>
+            <td class="title column-title column-primary">
+                <strong>
+                <a class="row-title" (click)="editPost(post.ID)">{{ post.post_title || '(no title)' }}</a>
+                <span class="post-state" *ngIf="post.post_status === 'draft'"> — Draft</span>
+                </strong>
+                <div class="row-actions">
+                <span class="edit">
+                    <a (click)="editPost(post.ID)">Edit</a> |
+                </span>
+                <span class="trash">
+                    <a (click)="trashPost(post)" class="submitdelete">Trash</a> |
+                </span>
+                <span class="view">
+                    <a (click)="viewPost(post)" target="_blank">View</a>
+                </span>
+                </div>
+            </td>
+            <td class="author column-author">
+                {{ post.author?.display_name || 'Unknown' }}
+            </td>
+            <td class="categories column-categories">
+                <span class="categories-placeholder">—</span>
+            </td>
+            <td class="tags column-tags">
+                <span class="tags-placeholder">—</span>
+            </td>
+            <td class="date column-date">
+                <span *ngIf="post.post_status === 'publish'">Published</span>
+                <span *ngIf="post.post_status === 'draft'">Last Modified</span>
+                <br>
+                {{ formatDate(post.post_date) }}
+            </td>
+            </tr>
+            <tr *ngIf="filteredPosts.length === 0">
+            <td colspan="6" class="no-items">No posts found.</td>
+            </tr>
+        </tbody>
+        <tbody *ngIf="loading">
+            <tr>
+            <td colspan="6" class="loading-row">
+                <div class="loading-spinner">Loading posts...</div>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+
+        <!-- Bottom Navigation -->
+        <div class="tablenav bottom">
+        <div class="alignleft actions">
+            <select class="wp-select">
+            <option value="-1">Bulk Actions</option>
+            <option value="edit">Edit</option>
+            <option value="trash">Move to Trash</option>
+            </select>
+            <button class="button action">Apply</button>
+        </div>
+        <div class="tablenav-pages">
+            <span class="displaying-num">{{ filteredPosts.length }} items</span>
+        </div>
+        </div>
     </div>
   </div>
 </div>
