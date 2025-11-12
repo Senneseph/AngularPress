@@ -1,10 +1,18 @@
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
+  const isBrowser = isPlatformBrowser(platformId);
+
+  // During SSR, allow navigation (browser will handle actual auth check)
+  if (!isBrowser) {
+    return true;
+  }
 
   if (authService.isAuthenticated()) {
     // Check if route requires specific capability
