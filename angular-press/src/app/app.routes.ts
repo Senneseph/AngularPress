@@ -60,6 +60,41 @@ export const routes: Routes = [
         path: 'tags',
         loadComponent: () => import('./components/tags/tags.component').then(m => m.TagsComponent),
         canActivate: [authGuard]
+      },
+      {
+        path: 'media',
+        loadComponent: () => import('./components/media/media.component').then(m => m.MediaComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'pages',
+        loadComponent: () => import('./components/pages/pages.component').then(m => m.PagesComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'comments',
+        loadComponent: () => import('./components/comments/comments.component').then(m => m.CommentsComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'appearance',
+        loadComponent: () => import('./components/appearance/appearance.component').then(m => m.AppearanceComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'plugins',
+        loadComponent: () => import('./components/plugins/plugins.component').then(m => m.PluginsComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'tools',
+        loadComponent: () => import('./components/tools/tools.component').then(m => m.ToolsComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'settings',
+        loadComponent: () => import('./components/settings/settings.component').then(m => m.SettingsComponent),
+        canActivate: [authGuard]
       }
     ]
   },
