@@ -1,2 +1,213 @@
-<h1>Dashboard</h1>
-<p>Welcome to Angular Press CMS</p>
+<div class="wp-admin">
+  <!-- Top Admin Bar -->
+  <div class="wp-admin-bar">
+    <div class="wp-admin-bar-left">
+      <a href="/" class="wp-logo" target="_blank" title="Visit Site">
+        <span class="screen-reader-text">Angular Press</span>
+      </a>
+      <span class="site-name">Angular Press</span>
+    </div>
+    <div class="wp-admin-bar-right">
+      <div class="user-menu">
+        <span class="user-info">
+          <span class="display-name">{{ currentUser?.displayName || currentUser?.username }}</span>
+        </span>
+        <div class="user-dropdown">
+          <a routerLink="/ap-admin/profile">Edit Profile</a>
+          <a (click)="logout()" style="cursor: pointer;">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wp-admin-content" [class.sidebar-collapsed]="sidebarCollapsed">
+    <!-- Sidebar Navigation -->
+    <nav class="wp-sidebar" [class.collapsed]="sidebarCollapsed">
+      <button class="collapse-toggle" (click)="toggleSidebar()" title="Collapse menu">
+        <span class="collapse-icon">{{ sidebarCollapsed ? '›' : '‹' }}</span>
+      </button>
+
+      <ul class="wp-menu">
+        <li class="menu-item active">
+          <a routerLink="/ap-admin/dashboard" routerLinkActive="active">
+            <span class="dashicons dashicons-dashboard"></span>
+            <span class="menu-text">Dashboard</span>
+          </a>
+        </li>
+
+        <li class="menu-item menu-separator"></li>
+
+        <li class="menu-item">
+          <a routerLink="/ap-admin/posts" routerLinkActive="active">
+            <span class="dashicons dashicons-admin-post"></span>
+            <span class="menu-text">Posts</span>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a routerLink="/ap-admin/media" routerLinkActive="active">
+            <span class="dashicons dashicons-admin-media"></span>
+            <span class="menu-text">Media</span>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a routerLink="/ap-admin/pages" routerLinkActive="active">
+            <span class="dashicons dashicons-admin-page"></span>
+            <span class="menu-text">Pages</span>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a routerLink="/ap-admin/comments" routerLinkActive="active">
+            <span class="dashicons dashicons-admin-comments"></span>
+            <span class="menu-text">Comments</span>
+          </a>
+        </li>
+
+        <li class="menu-item menu-separator"></li>
+
+        <li class="menu-item">
+          <a routerLink="/ap-admin/appearance" routerLinkActive="active">
+            <span class="dashicons dashicons-admin-appearance"></span>
+            <span class="menu-text">Appearance</span>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a routerLink="/ap-admin/plugins" routerLinkActive="active">
+            <span class="dashicons dashicons-admin-plugins"></span>
+            <span class="menu-text">Plugins</span>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a routerLink="/ap-admin/users" routerLinkActive="active">
+            <span class="dashicons dashicons-admin-users"></span>
+            <span class="menu-text">Users</span>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a routerLink="/ap-admin/tools" routerLinkActive="active">
+            <span class="dashicons dashicons-admin-tools"></span>
+            <span class="menu-text">Tools</span>
+          </a>
+        </li>
+
+        <li class="menu-item">
+          <a routerLink="/ap-admin/settings" routerLinkActive="active">
+            <span class="dashicons dashicons-admin-settings"></span>
+            <span class="menu-text">Settings</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="wp-main-content">
+      <div class="wrap">
+        <h1 class="wp-heading-inline">Dashboard</h1>
+
+        <!-- Welcome Panel -->
+        <div class="welcome-panel">
+          <div class="welcome-panel-content">
+            <h2>Welcome to Angular Press!</h2>
+            <p class="about-description">A modern WordPress alternative built with Angular and NestJS</p>
+            <div class="welcome-panel-column-container">
+              <div class="welcome-panel-column">
+                <h3>Get Started</h3>
+                <a class="button button-primary button-hero" routerLink="/ap-admin/posts/new">Write your first post</a>
+              </div>
+              <div class="welcome-panel-column">
+                <h3>Next Steps</h3>
+                <ul>
+                  <li><a routerLink="/ap-admin/appearance">Customize your site</a></li>
+                  <li><a routerLink="/ap-admin/settings">Manage settings</a></li>
+                  <li><a href="/" target="_blank">View your site</a></li>
+                </ul>
+              </div>
+              <div class="welcome-panel-column welcome-panel-last">
+                <h3>More Actions</h3>
+                <ul>
+                  <li><a routerLink="/ap-admin/users">Add users</a></li>
+                  <li><a routerLink="/ap-admin/media">Upload media</a></li>
+                  <li><a routerLink="/ap-admin/plugins">Browse plugins</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Widgets -->
+        <div class="dashboard-widgets-wrap">
+          <div class="dashboard-widgets">
+            <!-- At a Glance Widget -->
+            <div class="postbox">
+              <div class="postbox-header">
+                <h2>At a Glance</h2>
+              </div>
+              <div class="inside">
+                <div class="main">
+                  <ul>
+                    <li class="post-count">
+                      <a routerLink="/ap-admin/posts">{{ stats.posts.total }} Posts</a>
+                      <span class="count">({{ stats.posts.published }} Published, {{ stats.posts.draft }} Draft)</span>
+                    </li>
+                    <li class="page-count">
+                      <a routerLink="/ap-admin/pages">{{ stats.pages.total }} Pages</a>
+                    </li>
+                    <li class="comment-count">
+                      <a routerLink="/ap-admin/comments">{{ stats.comments.total }} Comments</a>
+                      <span class="count" *ngIf="stats.comments.pending > 0">({{ stats.comments.pending }} Pending)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Draft Widget -->
+            <div class="postbox">
+              <div class="postbox-header">
+                <h2>Quick Draft</h2>
+              </div>
+              <div class="inside">
+                <p>Create a quick draft post to save your ideas.</p>
+                <a class="button button-primary" routerLink="/ap-admin/posts/new">New Post</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-widgets">
+            <!-- Activity Widget -->
+            <div class="postbox">
+              <div class="postbox-header">
+                <h2>Activity</h2>
+              </div>
+              <div class="inside">
+                <div class="activity-block">
+                  <h3>Recently Published</h3>
+                  <p class="no-activity">No recent activity</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Site Health Widget -->
+            <div class="postbox">
+              <div class="postbox-header">
+                <h2>Site Health Status</h2>
+              </div>
+              <div class="inside">
+                <div class="health-check-body">
+                  <div class="site-status-all-clear">
+                    <p><strong>Great job!</strong> Your site is running smoothly.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
