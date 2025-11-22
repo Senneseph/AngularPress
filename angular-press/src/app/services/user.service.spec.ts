@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { UserService } from './user.service';
 import { User } from '../models/user.model';
+import { take } from 'rxjs/operators';
 
 describe('UserService', () => {
   let service: UserService;
@@ -114,15 +115,18 @@ describe('UserService', () => {
         isActive: true
       };
 
-      service.getUsers().subscribe(initialUsers => {
-        const initialCount = initialUsers.length;
+      let initialCount = 0;
+      const subscription = service.getUsers().subscribe(users => {
+        initialCount = users.length;
+      });
+      subscription.unsubscribe();
 
-        service.createUser(newUser).subscribe(() => {
-          service.getUsers().subscribe(users => {
-            expect(users.length).toBe(initialCount + 1);
-            expect(users.some(u => u.username === 'anotheruser')).toBe(true);
-            done();
-          });
+      service.createUser(newUser).subscribe(() => {
+        const finalSubscription = service.getUsers().subscribe(users => {
+          expect(users.length).toBe(initialCount + 1);
+          expect(users.some(u => u.username === 'anotheruser')).toBe(true);
+          finalSubscription.unsubscribe();
+          done();
         });
       });
     });
@@ -219,39 +223,46 @@ describe('UserService', () => {
 
   describe('deleteUser', () => {
     it('should delete a user by id', (done) => {
-      service.getUsers().subscribe(initialUsers => {
-        const initialCount = initialUsers.length;
+      let initialCount = 0;
+      const subscription = service.getUsers().subscribe(users => {
+        initialCount = users.length;
+      });
+      subscription.unsubscribe();
 
-        service.deleteUser(1).subscribe(() => {
-          service.getUsers().subscribe(users => {
-            expect(users.length).toBe(initialCount - 1);
-            const deletedUser = users.find(u => u.id === 1);
-            expect(deletedUser).toBeUndefined();
-            done();
-          });
+      service.deleteUser(1).subscribe(() => {
+        const finalSubscription = service.getUsers().subscribe(users => {
+          expect(users.length).toBe(initialCount - 1);
+          const deletedUser = users.find(u => u.id === 1);
+          expect(deletedUser).toBeUndefined();
+          finalSubscription.unsubscribe();
+          done();
         });
       });
     });
 
     it('should emit updated users list after deletion', (done) => {
       service.deleteUser(2).subscribe(() => {
-        service.getUsers().subscribe(users => {
+        const subscription = service.getUsers().subscribe(users => {
           const user = users.find(u => u.id === 2);
           expect(user).toBeUndefined();
+          subscription.unsubscribe();
           done();
         });
       });
     });
 
     it('should handle deleting non-existent user', (done) => {
-      service.getUsers().subscribe(initialUsers => {
-        const initialCount = initialUsers.length;
+      let initialCount = 0;
+      const subscription = service.getUsers().subscribe(users => {
+        initialCount = users.length;
+      });
+      subscription.unsubscribe();
 
-        service.deleteUser(999).subscribe(() => {
-          service.getUsers().subscribe(users => {
-            expect(users.length).toBe(initialCount);
-            done();
-          });
+      service.deleteUser(999).subscribe(() => {
+        const finalSubscription = service.getUsers().subscribe(users => {
+          expect(users.length).toBe(initialCount);
+          finalSubscription.unsubscribe();
+          done();
         });
       });
     });

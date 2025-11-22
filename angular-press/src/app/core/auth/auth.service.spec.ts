@@ -127,7 +127,8 @@ describe('AuthService', () => {
     });
 
     it('should emit user after login', (done) => {
-      const mockResponse = { access_token: 'fake-jwt-token' };
+      const mockToken = createMockJWT();
+      const mockResponse = { access_token: mockToken };
       let emissionCount = 0;
 
       service.currentUser$.subscribe(user => {
@@ -146,7 +147,8 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    const mockResponse = { access_token: 'fake-jwt-token' };
+    const mockToken = createMockJWT();
+    const mockResponse = { access_token: mockToken };
 
     it('should make POST request to login endpoint', (done) => {
       service.login('admin', 'password').subscribe(() => {
