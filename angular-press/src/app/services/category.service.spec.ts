@@ -142,7 +142,8 @@ describe('CategoryService', () => {
         count: 0
       };
 
-      service.createCategory(newCategory).subscribe(() => {
+      service.createCategory(newCategory).subscribe((result) => {
+        expect(result).toEqual(mockResponse);
         done();
       });
 
@@ -200,7 +201,8 @@ describe('CategoryService', () => {
         count: 5
       };
 
-      service.updateCategory(1, updateData).subscribe(() => {
+      service.updateCategory(1, updateData).subscribe((result) => {
+        expect(result).toEqual(mockResponse);
         done();
       });
 
@@ -235,7 +237,8 @@ describe('CategoryService', () => {
     it('should trigger reload after deletion', (done) => {
       const mockResponse = { message: 'Category deleted successfully' };
 
-      service.deleteCategory(2).subscribe(() => {
+      service.deleteCategory(2).subscribe((result) => {
+        expect(result).toEqual(mockResponse);
         done();
       });
 
@@ -259,6 +262,72 @@ describe('CategoryService', () => {
         expect(Array.isArray(categories)).toBe(true);
         done();
       });
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle HTTP error when getting category by id', (done) => {
+      service.getCategoryById(999).subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error) => {
+          expect(error.status).toBe(404);
+          expect(error.statusText).toBe('Not Found');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/categories/999'));
+      req.flush('Category not found', { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should handle HTTP error when creating category', (done) => {
+      const newCategory = {
+        name: 'Test',
+        slug: 'test',
+        description: 'Test'
+      };
+
+      service.createCategory(newCategory).subscribe({
+        next: () => fail('should have failed with 400 error'),
+        error: (error) => {
+          expect(error.status).toBe(400);
+          expect(error.statusText).toBe('Bad Request');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/categories') && request.method === 'POST');
+      req.flush('Invalid category data', { status: 400, statusText: 'Bad Request' });
+    });
+
+    it('should handle HTTP error when updating category', (done) => {
+      const updateData = { name: 'Updated' };
+
+      service.updateCategory(999, updateData).subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error) => {
+          expect(error.status).toBe(404);
+          expect(error.statusText).toBe('Not Found');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/categories/999') && request.method === 'PATCH');
+      req.flush('Category not found', { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should handle HTTP error when deleting category', (done) => {
+      service.deleteCategory(999).subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error) => {
+          expect(error.status).toBe(404);
+          expect(error.statusText).toBe('Not Found');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/categories/999') && request.method === 'DELETE');
+      req.flush('Category not found', { status: 404, statusText: 'Not Found' });
     });
   });
 });

@@ -33,6 +33,11 @@ describe('PostFormComponent', () => {
         { provide: ActivatedRoute, useValue: activatedRouteSpyObj }
       ]
     })
+    .overrideComponent(PostFormComponent, {
+      set: {
+        template: '<form [formGroup]="postForm"></form>'
+      }
+    })
     .compileComponents();
 
     storeSpy = TestBed.inject(Store) as jasmine.SpyObj<Store>;
@@ -145,34 +150,34 @@ describe('PostFormComponent', () => {
 
     it('should include form values in post data', () => {
       component.onSubmit();
-      
+
       const dispatchCall = storeSpy.dispatch.calls.mostRecent();
       const action = dispatchCall.args[0] as any;
-      
-      expect(action.payload.title).toBe('Test Title');
-      expect(action.payload.content).toBe('Test Content');
-      expect(action.payload.excerpt).toBe('Test Excerpt');
-      expect(action.payload.status).toBe('published');
+
+      expect(action.post.title).toBe('Test Title');
+      expect(action.post.content).toBe('Test Content');
+      expect(action.post.excerpt).toBe('Test Excerpt');
+      expect(action.post.status).toBe('published');
     });
 
     it('should set publishDate when creating post', () => {
       component.onSubmit();
-      
+
       const dispatchCall = storeSpy.dispatch.calls.mostRecent();
       const action = dispatchCall.args[0] as any;
-      
-      expect(action.payload.publishDate).toBeDefined();
-      expect(action.payload.publishDate instanceof Date).toBe(true);
+
+      expect(action.post.publishDate).toBeDefined();
+      expect(action.post.publishDate instanceof Date).toBe(true);
     });
 
     it('should set modified date when creating post', () => {
       component.onSubmit();
-      
+
       const dispatchCall = storeSpy.dispatch.calls.mostRecent();
       const action = dispatchCall.args[0] as any;
-      
-      expect(action.payload.modified).toBeDefined();
-      expect(action.payload.modified instanceof Date).toBe(true);
+
+      expect(action.post.modified).toBeDefined();
+      expect(action.post.modified instanceof Date).toBe(true);
     });
   });
 

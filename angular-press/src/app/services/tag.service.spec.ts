@@ -138,7 +138,8 @@ describe('TagService', () => {
         count: 0
       };
 
-      service.createTag(newTag).subscribe(() => {
+      service.createTag(newTag).subscribe((result) => {
+        expect(result).toEqual(mockResponse);
         done();
       });
 
@@ -196,7 +197,8 @@ describe('TagService', () => {
         count: 5
       };
 
-      service.updateTag(1, updateData).subscribe(() => {
+      service.updateTag(1, updateData).subscribe((result) => {
+        expect(result).toEqual(mockResponse);
         done();
       });
 
@@ -231,7 +233,8 @@ describe('TagService', () => {
     it('should trigger reload after deletion', (done) => {
       const mockResponse = { message: 'Tag deleted successfully' };
 
-      service.deleteTag(2).subscribe(() => {
+      service.deleteTag(2).subscribe((result) => {
+        expect(result).toEqual(mockResponse);
         done();
       });
 
@@ -255,6 +258,72 @@ describe('TagService', () => {
         expect(Array.isArray(tags)).toBe(true);
         done();
       });
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle HTTP error when getting tag by id', (done) => {
+      service.getTagById(999).subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error) => {
+          expect(error.status).toBe(404);
+          expect(error.statusText).toBe('Not Found');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/tags/999'));
+      req.flush('Tag not found', { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should handle HTTP error when creating tag', (done) => {
+      const newTag = {
+        name: 'test',
+        slug: 'test',
+        description: 'Test'
+      };
+
+      service.createTag(newTag).subscribe({
+        next: () => fail('should have failed with 400 error'),
+        error: (error) => {
+          expect(error.status).toBe(400);
+          expect(error.statusText).toBe('Bad Request');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/tags') && request.method === 'POST');
+      req.flush('Invalid tag data', { status: 400, statusText: 'Bad Request' });
+    });
+
+    it('should handle HTTP error when updating tag', (done) => {
+      const updateData = { name: 'Updated' };
+
+      service.updateTag(999, updateData).subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error) => {
+          expect(error.status).toBe(404);
+          expect(error.statusText).toBe('Not Found');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/tags/999') && request.method === 'PATCH');
+      req.flush('Tag not found', { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should handle HTTP error when deleting tag', (done) => {
+      service.deleteTag(999).subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error) => {
+          expect(error.status).toBe(404);
+          expect(error.statusText).toBe('Not Found');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/tags/999') && request.method === 'DELETE');
+      req.flush('Tag not found', { status: 404, statusText: 'Not Found' });
     });
   });
 });

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngxs/store';
 import { of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { PostListComponent } from './post-list.component';
 import { PostActions } from '../../../store/posts/posts.state';
 import { Post } from '../../../core/models/post.interface';
@@ -51,7 +52,14 @@ describe('PostListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ PostListComponent ],
       providers: [
-        { provide: Store, useValue: spy }
+        { provide: Store, useValue: spy },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+            queryParams: of({})
+          }
+        }
       ]
     })
     .compileComponents();

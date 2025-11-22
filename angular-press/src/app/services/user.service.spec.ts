@@ -116,17 +116,15 @@ describe('UserService', () => {
       };
 
       let initialCount = 0;
-      const subscription = service.getUsers().subscribe(users => {
+      service.getUsers().pipe(take(1)).subscribe(users => {
         initialCount = users.length;
-      });
-      subscription.unsubscribe();
 
-      service.createUser(newUser).subscribe(() => {
-        const finalSubscription = service.getUsers().subscribe(users => {
-          expect(users.length).toBe(initialCount + 1);
-          expect(users.some(u => u.username === 'anotheruser')).toBe(true);
-          finalSubscription.unsubscribe();
-          done();
+        service.createUser(newUser).subscribe(() => {
+          service.getUsers().pipe(take(1)).subscribe(users => {
+            expect(users.length).toBe(initialCount + 1);
+            expect(users.some(u => u.username === 'anotheruser')).toBe(true);
+            done();
+          });
         });
       });
     });
@@ -223,46 +221,45 @@ describe('UserService', () => {
 
   describe('deleteUser', () => {
     it('should delete a user by id', (done) => {
-      let initialCount = 0;
-      const subscription = service.getUsers().subscribe(users => {
-        initialCount = users.length;
-      });
-      subscription.unsubscribe();
+      service.getUsers().pipe(take(1)).subscribe(initialUsers => {
+        const initialCount = initialUsers.length;
 
-      service.deleteUser(1).subscribe(() => {
-        const finalSubscription = service.getUsers().subscribe(users => {
-          expect(users.length).toBe(initialCount - 1);
-          const deletedUser = users.find(u => u.id === 1);
-          expect(deletedUser).toBeUndefined();
-          finalSubscription.unsubscribe();
-          done();
+        service.deleteUser(1).pipe(take(1)).subscribe({
+          complete: () => {
+            service.getUsers().pipe(take(1)).subscribe(users => {
+              expect(users.length).toBe(initialCount - 1);
+              const deletedUser = users.find(u => u.id === 1);
+              expect(deletedUser).toBeUndefined();
+              done();
+            });
+          }
         });
       });
     });
 
     it('should emit updated users list after deletion', (done) => {
-      service.deleteUser(2).subscribe(() => {
-        const subscription = service.getUsers().subscribe(users => {
-          const user = users.find(u => u.id === 2);
-          expect(user).toBeUndefined();
-          subscription.unsubscribe();
-          done();
-        });
+      service.deleteUser(2).pipe(take(1)).subscribe({
+        complete: () => {
+          service.getUsers().pipe(take(1)).subscribe(users => {
+            const user = users.find(u => u.id === 2);
+            expect(user).toBeUndefined();
+            done();
+          });
+        }
       });
     });
 
     it('should handle deleting non-existent user', (done) => {
-      let initialCount = 0;
-      const subscription = service.getUsers().subscribe(users => {
-        initialCount = users.length;
-      });
-      subscription.unsubscribe();
+      service.getUsers().pipe(take(1)).subscribe(initialUsers => {
+        const initialCount = initialUsers.length;
 
-      service.deleteUser(999).subscribe(() => {
-        const finalSubscription = service.getUsers().subscribe(users => {
-          expect(users.length).toBe(initialCount);
-          finalSubscription.unsubscribe();
-          done();
+        service.deleteUser(999).pipe(take(1)).subscribe({
+          complete: () => {
+            service.getUsers().pipe(take(1)).subscribe(users => {
+              expect(users.length).toBe(initialCount);
+              done();
+            });
+          }
         });
       });
     });
@@ -278,6 +275,61 @@ describe('UserService', () => {
         expect(users).toBeDefined();
         expect(Array.isArray(users)).toBe(true);
         done();
+      });
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle getUserById with non-existent id', () => {
+      const user = service.getUserById(999);
+      expect(user).toBeUndefined();
+    });
+
+    it('should handle deleteUser with non-existent id', (done) => {
+      service.getUsers().pipe(take(1)).subscribe(initialUsers => {
+        const initialCount = initialUsers.length;
+
+        service.deleteUser(999).pipe(take(1)).subscribe({
+          complete: () => {
+            service.getUsers().pipe(take(1)).subscribe(users => {
+              expect(users.length).toBe(initialCount);
+              done();
+            });
+          }
+        });
+      });
+    });
+
+    it('should generate unique ids for new users', (done) => {
+      const user1: User = {
+        username: 'user1',
+        email: 'user1@example.com',
+        firstName: 'User',
+        lastName: 'One',
+        role: 'subscriber',
+        dateCreated: new Date(),
+        isActive: true
+      };
+
+      const user2: User = {
+        username: 'user2',
+        email: 'user2@example.com',
+        firstName: 'User',
+        lastName: 'Two',
+        role: 'subscriber',
+        dateCreated: new Date(),
+        isActive: true
+      };
+
+      service.createUser(user1).subscribe(() => {
+        service.createUser(user2).subscribe(() => {
+          service.getUsers().pipe(take(1)).subscribe(users => {
+            const ids = users.map(u => u.id);
+            const uniqueIds = new Set(ids);
+            expect(uniqueIds.size).toBe(ids.length);
+            done();
+          });
+        });
       });
     });
   });

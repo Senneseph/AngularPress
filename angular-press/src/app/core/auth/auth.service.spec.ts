@@ -242,10 +242,13 @@ describe('AuthService', () => {
 
     it('should emit null through currentUser$ observable', (done) => {
       let emissionCount = 0;
-      service.currentUser$.subscribe(user => {
+      const subscription = service.currentUser$.subscribe(user => {
         emissionCount++;
-        if (emissionCount === 3) {
+        // First emission is the logged-in user from beforeEach
+        // Second emission is null from logout
+        if (emissionCount === 2) {
           expect(user).toBeNull();
+          subscription.unsubscribe();
           done();
         }
       });
@@ -279,6 +282,52 @@ describe('AuthService', () => {
       service.login('admin', 'password').subscribe(() => {
         expect(service.hasCapability('nonexistent_capability')).toBe(false);
         done();
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/auth/login'));
+      req.flush(mockResponse);
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle login error with invalid credentials', (done) => {
+      service.login('admin', 'wrongpassword').subscribe({
+        next: () => fail('should have failed with 401 error'),
+        error: (error) => {
+          expect(error.status).toBe(401);
+          expect(error.statusText).toBe('Unauthorized');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/auth/login'));
+      req.flush('Invalid credentials', { status: 401, statusText: 'Unauthorized' });
+    });
+
+    it('should handle login error with server error', (done) => {
+      service.login('admin', 'password').subscribe({
+        next: () => fail('should have failed with 500 error'),
+        error: (error) => {
+          expect(error.status).toBe(500);
+          expect(error.statusText).toBe('Internal Server Error');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/auth/login'));
+      req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
+    });
+
+    it('should handle malformed JWT token gracefully', (done) => {
+      const mockResponse = { access_token: 'invalid-token' };
+
+      service.login('admin', 'password').subscribe({
+        next: () => {
+          // Login should succeed but user should be null due to invalid token
+          // The service stores the token but can't decode it
+          expect(service.isAuthenticated()).toBe(true); // Token is stored
+          done();
+        }
       });
 
       const req = httpMock.expectOne(request => request.url.includes('/auth/login'));

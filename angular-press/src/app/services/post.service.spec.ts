@@ -270,7 +270,12 @@ describe('PostService', () => {
 
     it('should remove post from local cache after deletion', (done) => {
       service.deletePost('2').subscribe(() => {
-        done();
+        // Verify the post was removed from local cache
+        service.posts$.subscribe(posts => {
+          const found = posts.find(p => p.id === '2');
+          expect(found).toBeUndefined();
+          done();
+        });
       });
 
       const deleteReq = httpMock.expectOne(request => request.url.includes('/posts/2') && request.method === 'DELETE');
@@ -289,6 +294,100 @@ describe('PostService', () => {
         expect(Array.isArray(posts)).toBe(true);
         done();
       });
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle HTTP error when getting post by id', (done) => {
+      const errorMessage = 'Post not found';
+
+      service.getPostById('999').subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error) => {
+          expect(error.status).toBe(404);
+          expect(error.statusText).toBe('Not Found');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/posts/999'));
+      req.flush(errorMessage, { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should handle HTTP error when creating post', (done) => {
+      const newPost: Post = {
+        id: '0',
+        title: 'Test Post',
+        content: 'Test content',
+        excerpt: 'Test excerpt',
+        status: 'published',
+        type: 'post',
+        author: 'Test Author',
+        publishDate: new Date(),
+        modified: new Date(),
+        slug: 'test-post',
+        categories: [],
+        tags: [],
+        featured_image: '',
+        meta: {}
+      };
+
+      service.createPost(newPost).subscribe({
+        next: () => fail('should have failed with 400 error'),
+        error: (error) => {
+          expect(error.status).toBe(400);
+          expect(error.statusText).toBe('Bad Request');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/posts') && request.method === 'POST');
+      req.flush('Invalid post data', { status: 400, statusText: 'Bad Request' });
+    });
+
+    it('should handle HTTP error when updating post', (done) => {
+      const updatedPost: Post = {
+        id: '1',
+        title: 'Updated Title',
+        content: 'Updated content',
+        excerpt: 'Updated excerpt',
+        status: 'published',
+        type: 'post',
+        author: 'Test Author',
+        publishDate: new Date(),
+        modified: new Date(),
+        slug: 'test-post',
+        categories: [],
+        tags: [],
+        featured_image: '',
+        meta: {}
+      };
+
+      service.updatePost(updatedPost).subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error) => {
+          expect(error.status).toBe(404);
+          expect(error.statusText).toBe('Not Found');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/posts/1') && request.method === 'PATCH');
+      req.flush('Post not found', { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should handle HTTP error when deleting post', (done) => {
+      service.deletePost('999').subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error) => {
+          expect(error.status).toBe(404);
+          expect(error.statusText).toBe('Not Found');
+          done();
+        }
+      });
+
+      const req = httpMock.expectOne(request => request.url.includes('/posts/999') && request.method === 'DELETE');
+      req.flush('Post not found', { status: 404, statusText: 'Not Found' });
     });
   });
 });
