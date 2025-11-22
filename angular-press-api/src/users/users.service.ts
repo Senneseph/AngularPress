@@ -33,7 +33,7 @@ export class UsersService {
       userUrl: '',
       userActivationKey: '',
       userStatus: 0,
-      requiresPasswordChange: false,
+      requirePasswordChange: false,
     });
 
     const savedUser = await this.userRepository.save(user);
