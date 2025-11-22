@@ -6,6 +6,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { PagesModule } from './pages/pages.module';
+import { MediaModule } from './media/media.module';
+import { UsersModule } from './users/users.module';
+import { CategoriesModule } from './categories/categories.module';
+import { TagsModule } from './tags/tags.module';
 import { User } from './entities/user.entity';
 import { Post } from './entities/post.entity';
 import { Term } from './entities/term.entity';
@@ -34,6 +38,10 @@ import { TermTaxonomy } from './entities/term-taxonomy.entity';
     AuthModule,
     PostsModule,
     PagesModule,
+    MediaModule,
+    UsersModule,
+    CategoriesModule,
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
