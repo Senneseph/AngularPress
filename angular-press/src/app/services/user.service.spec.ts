@@ -114,15 +114,15 @@ describe('UserService', () => {
         isActive: true
       };
 
-      let initialCount = 0;
-      service.getUsers().subscribe(users => {
-        initialCount = users.length;
-      });
+      service.getUsers().subscribe(initialUsers => {
+        const initialCount = initialUsers.length;
 
-      service.createUser(newUser).subscribe(() => {
-        service.getUsers().subscribe(users => {
-          expect(users.length).toBe(initialCount + 1);
-          done();
+        service.createUser(newUser).subscribe(() => {
+          service.getUsers().subscribe(users => {
+            expect(users.length).toBe(initialCount + 1);
+            expect(users.some(u => u.username === 'anotheruser')).toBe(true);
+            done();
+          });
         });
       });
     });
@@ -219,17 +219,16 @@ describe('UserService', () => {
 
   describe('deleteUser', () => {
     it('should delete a user by id', (done) => {
-      let initialCount = 0;
-      service.getUsers().subscribe(users => {
-        initialCount = users.length;
-      });
+      service.getUsers().subscribe(initialUsers => {
+        const initialCount = initialUsers.length;
 
-      service.deleteUser(1).subscribe(() => {
-        service.getUsers().subscribe(users => {
-          expect(users.length).toBe(initialCount - 1);
-          const deletedUser = users.find(u => u.id === 1);
-          expect(deletedUser).toBeUndefined();
-          done();
+        service.deleteUser(1).subscribe(() => {
+          service.getUsers().subscribe(users => {
+            expect(users.length).toBe(initialCount - 1);
+            const deletedUser = users.find(u => u.id === 1);
+            expect(deletedUser).toBeUndefined();
+            done();
+          });
         });
       });
     });
@@ -245,15 +244,14 @@ describe('UserService', () => {
     });
 
     it('should handle deleting non-existent user', (done) => {
-      let initialCount = 0;
-      service.getUsers().subscribe(users => {
-        initialCount = users.length;
-      });
+      service.getUsers().subscribe(initialUsers => {
+        const initialCount = initialUsers.length;
 
-      service.deleteUser(999).subscribe(() => {
-        service.getUsers().subscribe(users => {
-          expect(users.length).toBe(initialCount);
-          done();
+        service.deleteUser(999).subscribe(() => {
+          service.getUsers().subscribe(users => {
+            expect(users.length).toBe(initialCount);
+            done();
+          });
         });
       });
     });

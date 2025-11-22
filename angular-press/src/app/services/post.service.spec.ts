@@ -180,15 +180,16 @@ describe('PostService', () => {
       };
 
       service.createPost(newPost).subscribe(() => {
-        done();
+        // Verify the post was added to local cache
+        service.posts$.subscribe(posts => {
+          const found = posts.find(p => p.id === '2');
+          expect(found).toBeDefined();
+          done();
+        });
       });
 
       const createReq = httpMock.expectOne(request => request.url.includes('/posts') && request.method === 'POST');
       createReq.flush(mockResponse);
-
-      // Verify reload is triggered
-      const reloadReq = httpMock.expectOne(request => request.url.includes('/posts') && request.method === 'GET');
-      reloadReq.flush({ data: [mockResponse], total: 1, page: 1, limit: 100, totalPages: 1 });
     });
   });
 
@@ -245,16 +246,13 @@ describe('PostService', () => {
 
       const mockResponse: Post = { ...updatedPost };
 
-      service.updatePost(updatedPost).subscribe(() => {
+      service.updatePost(updatedPost).subscribe((result) => {
+        expect(result).toEqual(mockResponse);
         done();
       });
 
       const updateReq = httpMock.expectOne(request => request.url.includes('/posts/1') && request.method === 'PATCH');
       updateReq.flush(mockResponse);
-
-      // Verify reload is triggered
-      const reloadReq = httpMock.expectOne(request => request.url.includes('/posts') && request.method === 'GET');
-      reloadReq.flush({ data: [mockResponse], total: 1, page: 1, limit: 100, totalPages: 1 });
     });
   });
 

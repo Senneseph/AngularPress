@@ -253,16 +253,16 @@ describe('AuthService', () => {
   });
 
   describe('hasCapability', () => {
-    const mockResponse = { access_token: 'fake-jwt-token' };
-
     it('should return false when no user is logged in', () => {
       expect(service.hasCapability('manage_options')).toBe(false);
     });
 
     it('should return true when user has the capability', (done) => {
+      const mockToken = createMockJWT({ capabilities: ['manage_options', 'edit_posts'] });
+      const mockResponse = { access_token: mockToken };
+
       service.login('admin', 'password').subscribe(() => {
-        // After login, user should have capabilities
-        // This test may need adjustment based on actual implementation
+        expect(service.hasCapability('manage_options')).toBe(true);
         done();
       });
 
@@ -271,6 +271,9 @@ describe('AuthService', () => {
     });
 
     it('should return false when user does not have the capability', (done) => {
+      const mockToken = createMockJWT({ capabilities: ['edit_posts'] });
+      const mockResponse = { access_token: mockToken };
+
       service.login('admin', 'password').subscribe(() => {
         expect(service.hasCapability('nonexistent_capability')).toBe(false);
         done();

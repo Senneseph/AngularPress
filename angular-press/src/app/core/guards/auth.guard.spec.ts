@@ -154,7 +154,7 @@ describe('authGuard', () => {
           TestBed.runInInjectionContext(() =>
             authGuard(mockRoute, mockState)
           );
-          expect(routerSpy.navigate).toHaveBeenCalledWith(['/ap-admin']);
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['/ap-admin/dashboard']);
         });
 
         it('should handle multiple capability checks', () => {
