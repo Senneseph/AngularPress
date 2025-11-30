@@ -9,8 +9,15 @@ COPY package*.json ./
 # Install dependencies (using legacy-peer-deps for Angular 19 + NGXS compatibility)
 RUN npm ci --legacy-peer-deps
 
+# Install sharp for image generation (needs build tools on Alpine)
+RUN apk add --no-cache python3 make g++ && \
+    npm install sharp --save-dev
+
 # Copy source code
 COPY . .
+
+# Generate favicon and OG images from SVG sources
+RUN node scripts/generate-images.js
 
 # Build the application
 RUN npm run build

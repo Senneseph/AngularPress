@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#16213e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f3460;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="angularGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DD0031;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C3002F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e0e0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="200" fill="#DD0031" opacity="0.1"/>
+  <circle cx="1100" cy="530" r="250" fill="#1976D2" opacity="0.1"/>
+  <!-- Angular Shield Logo -->
+  <g transform="translate(200, 115)">
+    <path d="M100 0 L180 32 L168 160 L100 200 L32 160 L20 32 Z" fill="url(#angularGrad)"/>
+    <path d="M100 20 L160 44 L152 140 L100 172 L48 140 L40 44 Z" fill="#1976D2" opacity="0.3"/>
+    <text x="100" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#ffffff">AP</text>
+  </g>
+  <!-- Main Title -->
+  <text x="420" y="240" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="url(#textGrad)">AngularPress</text>
+  <!-- Tagline -->
+  <text x="420" y="300" font-family="Arial, sans-serif" font-size="28" fill="#b0b0b0">Modern Content Management with Angular</text>
+  <!-- Feature highlights -->
+  <g transform="translate(420, 360)">
+    <circle cx="0" cy="15" r="6" fill="#DD0031"/>
+    <text x="20" y="22" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">Angular 19 + NestJS</text>
+  </g>
+  <g transform="translate(420, 400)">
+    <circle cx="0" cy="15" r="6" fill="#1976D2"/>
+    <text x="20" y="22" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">Material Design UI</text>
+  </g>
+  <g transform="translate(420, 440)">
+    <circle cx="0" cy="15" r="6" fill="#4CAF50"/>
+    <text x="20" y="22" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">Docker Ready</text>
+  </g>
+  <!-- Domain -->
+  <text x="600" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#888888">angularpress.iffuso.com</text>
+  <!-- Border accent -->
+  <rect x="0" y="0" width="1200" height="6" fill="url(#angularGrad)"/>
+</svg>
+
