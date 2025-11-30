@@ -38,7 +38,12 @@ export const routes: Routes = [
       },
       {
         path: 'posts/new',
-        loadComponent: () => import('./components/posts/post-form/post-form.component').then(m => m.PostFormComponent),
+        loadComponent: () => import('./components/posts/visual-editor/visual-editor.component').then(m => m.VisualEditorComponent),
+        canActivate: [authGuard]
+      },
+      {
+        path: 'posts/:id/edit',
+        loadComponent: () => import('./components/posts/visual-editor/visual-editor.component').then(m => m.VisualEditorComponent),
         canActivate: [authGuard]
       },
       {
