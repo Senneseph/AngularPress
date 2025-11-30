@@ -1,7 +1,7 @@
-# Angular Press Build Specification
+# AngularPress Build Specification
 
 ## Project Overview
-Angular Press is a modern Content Management System (CMS) built with Angular, replicating WordPress functionality while leveraging the benefits of a modern single-page application architecture. This specification outlines the requirements, architecture, and implementation details for achieving a feature-complete WordPress alternative with 100% test coverage.
+AngularPress is a modern Content Management System (CMS) built with Angular, replicating WordPress functionality while leveraging the benefits of a modern single-page application architecture. This specification outlines the requirements, architecture, and implementation details for achieving a feature-complete WordPress alternative with 100% test coverage.
 
 ## Core Requirements
 

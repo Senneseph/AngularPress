@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: angularpress-mysql-prod
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-angular_press}
+      MYSQL_USER: ${MYSQL_USER:-angular_press_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql_data_prod:/var/lib/mysql
+      - ./angular-press-api/scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - angularpress-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NestJS API Backend
+  api:
+    build:
+      context: ./angular-press-api
+      dockerfile: Dockerfile
+    container_name: angularpress-api-prod
+    restart: always
+    environment:
+      NODE_ENV: production
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: ${MYSQL_USER:-angular_press_user}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_DATABASE: ${MYSQL_DATABASE:-angular_press}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-7d}
+      PORT: 3000
+      CORS_ORIGIN: https://angularpress.iffuso.com
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - angularpress-network
+    ports:
+      - "127.0.0.1:3003:3000"
+
+  # Angular Frontend
+  frontend:
+    build:
+      context: ./angular-press
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    container_name: angularpress-frontend-prod
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - angularpress-network
+    ports:
+      - "127.0.0.1:4203:80"
+
+networks:
+  angularpress-network:
+    driver: bridge
+
+volumes:
+  mysql_data_prod:
+    driver: local
+

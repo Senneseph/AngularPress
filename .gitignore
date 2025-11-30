@@ -24,6 +24,7 @@ yarn-error.log
 .augmentignore
 .gitignore
 .env
+.env.production
 
 # Visual Studio Code
 .vscode/*

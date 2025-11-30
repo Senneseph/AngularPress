@@ -1,6 +1,6 @@
-# Angular Press - Docker Setup Guide
+# AngularPress - Docker Setup Guide
 
-This guide explains how to run the entire Angular Press stack (MySQL, API, and Frontend) using Docker Compose.
+This guide explains how to run the entire AngularPress stack (MySQL, API, and Frontend) using Docker Compose.
 
 ## Prerequisites
 
@@ -254,7 +254,7 @@ After starting the containers for the first time:
 1. **Wait for all services to be healthy** (~1 minute)
 2. **Access the frontend**: http://localhost:4200
 3. **Register a new user** via the API or frontend
-4. **Login** and start using Angular Press!
+4. **Login** and start using AngularPress!
 
 ### Create Admin User via API
 

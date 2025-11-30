@@ -1,4 +1,4 @@
-# Angular Press API Setup Guide
+# AngularPress API Setup Guide
 
 ## Prerequisites
 

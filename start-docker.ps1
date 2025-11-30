@@ -1,6 +1,6 @@
-# Start Angular Press with Docker Compose
+# Start AngularPress with Docker Compose
 
-Write-Host "Starting Angular Press (Docker)" -ForegroundColor Green
+Write-Host "Starting AngularPress (Docker)" -ForegroundColor Green
 Write-Host "================================" -ForegroundColor Green
 Write-Host ""
 

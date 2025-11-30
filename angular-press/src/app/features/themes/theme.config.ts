@@ -25,9 +25,9 @@ export const THEME_CONFIG = new InjectionToken<ThemeConfig>('THEME_CONFIG');
 
 export const DEFAULT_THEME_CONFIG: ThemeConfig = {
   name: 'Default Theme',
-  author: 'Angular Press',
+  author: 'AngularPress',
   version: '1.0.0',
-  description: 'Default theme for Angular Press',
+  description: 'Default theme for AngularPress',
   templates: {},
   styles: [],
   scripts: [],

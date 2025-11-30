@@ -1,7 +1,7 @@
-# Start Angular Press locally (without Docker)
+# Start AngularPress locally (without Docker)
 # Requires MySQL to be running locally
 
-Write-Host "Starting Angular Press (Local Development)" -ForegroundColor Green
+Write-Host "Starting AngularPress (Local Development)" -ForegroundColor Green
 Write-Host "==========================================" -ForegroundColor Green
 Write-Host ""
 
@@ -33,7 +33,7 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd angular-press;
 
 Write-Host ""
 Write-Host "==========================================" -ForegroundColor Green
-Write-Host "Angular Press is starting up!" -ForegroundColor Green
+Write-Host "AngularPress is starting up!" -ForegroundColor Green
 Write-Host ""
 Write-Host "API:      http://localhost:3000" -ForegroundColor Cyan
 Write-Host "Frontend: http://localhost:4200" -ForegroundColor Cyan

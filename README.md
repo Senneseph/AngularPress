@@ -1,4 +1,4 @@
-# Angular Press
+# AngularPress
 
 A modern WordPress alternative built entirely with **Angular 20** and **server-side TypeScript** (NestJS), replacing PHP with a fully TypeScript-based architecture.
 

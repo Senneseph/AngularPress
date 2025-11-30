@@ -15,7 +15,7 @@ import { PLUGIN_CONFIG } from './plugin.config';
       useValue: {
         name: 'Core Plugin',
         version: '1.0.0',
-        author: 'Angular Press',
+        author: 'AngularPress',
         description: 'Core functionality plugin',
         hooks: {}
       }
