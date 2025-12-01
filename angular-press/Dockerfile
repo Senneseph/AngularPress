@@ -10,7 +10,9 @@ COPY package*.json ./
 RUN npm ci --legacy-peer-deps
 
 # Install sharp for image generation (needs build tools on Alpine)
-RUN apk add --no-cache python3 make g++ && \
+# Also install fonts for proper SVG text rendering
+RUN apk add --no-cache python3 make g++ fontconfig ttf-dejavu ttf-liberation font-noto && \
+    fc-cache -f && \
     npm install sharp --save-dev
 
 # Copy source code
